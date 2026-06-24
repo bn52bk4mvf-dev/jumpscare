@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>整蛊页面</title>
+
+<style>
+
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+#screen{
+    color:white;
+    font-size:120px;
+    font-weight:bold;
+    text-align:center;
+    z-index:10;
+}
+
+.red{
+    color:red;
+    text-shadow:
+    0 0 10px red,
+    0 0 20px red,
+    0 0 40px red;
+}
+
+#face{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:none;
+    transform:scale(0.15);
+}
+
+.flash{
+    animation:flash 0.15s infinite;
+}
+
+@keyframes flash{
+    0%{background:black;}
+    50%{background:white;}
+    100%{background:black;}
+}
+
+.shake{
+    animation:shake 0.05s infinite;
+}
+
+@keyframes shake{
+    0%{transform:translate(4px,2px);}
+    25%{transform:translate(-4px,-2px);}
+    50%{transform:translate(3px,-3px);}
+    75%{transform:translate(-3px,3px);}
+    100%{transform:translate(4px,-2px);}
+}
+
+#startBtn{
+    position:absolute;
+    padding:15px 25px;
+    font-size:24px;
+    cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<button id="startBtn">点击开始</button>
+
+<div id="screen"></div>
+
+<img id="face" src="scary.jpg">
+
+<script>
+
+const btn = document.getElementById("startBtn");
+const screen = document.getElementById("screen");
+const face = document.getElementById("face");
+
+btn.onclick = async ()=>{
+
+    btn.style.display="none";
+
+    if(document.documentElement.requestFullscreen){
+        document.documentElement.requestFullscreen().catch(()=>{});
+    }
+
+    let count = 3;
+
+    screen.innerHTML = count;
+
+    const timer = setInterval(()=>{
+
+        count--;
+
+        if(count>0){
+            screen.innerHTML=count;
+        }
+
+        else if(count===0){
+
+            screen.innerHTML="你被骗了！";
+            screen.classList.add("red");
+
+        }
+
+        else{
+
+            clearInterval(timer);
+
+            document.body.classList.add("flash");
+
+            setTimeout(()=>{
+
+                document.body.classList.remove("flash");
+
+                screen.style.display="none";
+
+                face.style.display="block";
+
+                let scale=0.15;
+
+                const zoom=setInterval(()=>{
+
+                    scale+=0.12;
+
+                    face.style.transform=
+                    `scale(${scale})`;
+
+                    if(scale>=3){
+
+                        clearInterval(zoom);
+
+                        face.classList.add("shake");
+
+                    }
+
+                },16);
+
+            },800);
+
+        }
+
+    },1000);
+
+};
+
+</script>
+
+</body>
+</html>
